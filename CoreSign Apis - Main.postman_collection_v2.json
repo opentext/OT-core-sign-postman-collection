@@ -1,0 +1,1697 @@
+{
+	"info": {
+		"_postman_id": "e5406379-1723-4b74-9c4d-19688dfa8d0d",
+		"name": "CoreSign Apis - Main",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Docs",
+			"item": [
+				{
+					"name": "ListDocs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"List Docs. Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.environment.set(\"count\", jsonData.count);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/documents/?status=si",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"documents",
+								""
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "si"
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateDocFromValidURL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create Document. Assert Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"doc_uuid\", jsonData.uuid);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file_from_url",
+									"value": "",
+									"description": "url for doc goes here",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "",
+									"description": "document name ",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/documents/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"documents",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RetrieveDoc",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/documents/:doc_id/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"documents",
+								":doc_id",
+								""
+							],
+							"variable": [
+								{
+									"key": "doc_id",
+									"value": "{{doc_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteDoc",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/documents/:doc_id/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"documents",
+								":doc_id",
+								""
+							],
+							"variable": [
+								{
+									"key": "doc_id",
+									"value": "{{doc_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DocAttachment",
+			"item": [
+				{
+					"name": "RetrieveAttachList",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/document-attachments/?document__uuid={{doc_uuid}}",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"document-attachments",
+								""
+							],
+							"query": [
+								{
+									"key": "document__uuid",
+									"value": "{{doc_uuid}}"
+								},
+								{
+									"key": "document__external_id",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "created",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Doc Attach",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create a Doc Attach. Assert Status code is 201.\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"attach_uuid\", jsonData.uuid);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "attach_name.pdf",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "file_from_content",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "file_from_content_name",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "file_from_url",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "document",
+									"value": "{{signature_url_body}}/api/v1/documents/{{doc_uuid}}/",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/document-attachments/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"document-attachments",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a DocAttach",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/document-attachments/:attach_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"document-attachments",
+								":attach_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "attach_uuid",
+									"value": "{{attach_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Doc Attachment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/document-attachments/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"document-attachments",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{attach_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SignatureRequests",
+			"item": [
+				{
+					"name": "Create SignRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create a Signature Request. Assert Status code is 201.\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"sr_uuid\", jsonData.uuid);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"is_being_prepared\": false,\n  \"subject\": \"CreateSR-1Signer-OnlyOthers\",\n  \"message\": \"1 signer\",\n  \"who\": \"o\",\n  \"send_reminders\": true,\n  \"signers\": [\n    {\n      \"email\": \"signer's email\",\n      \"first_name\": \"signer first name\",\n      \"last_name\": \"signer last name\",\n      \"needs_to_sign\": true,\n      \"order\": 0,\n      \"language\": \"en\"\n    }\n  ],\n  \"document\": \"{{signature_url_body}}/api/v1/documents/{{doc_uuid}}/\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/signature-requests/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"signature-requests",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve List of Signature Requests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/signature-requests/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"signature-requests",
+								""
+							],
+							"query": [
+								{
+									"key": "who",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "from_email",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a SignatureRequest",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/signature-requests/:signature_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"signature-requests",
+								":signature_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "signature_uuid",
+									"value": "{{sr_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend SignatureRequest",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/signature-requests/:signrequest_uuid/resend/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"signature-requests",
+								":signrequest_uuid",
+								"resend",
+								""
+							],
+							"variable": [
+								{
+									"key": "signrequest_uuid",
+									"value": "{{sr_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel SignRequest",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/signature-requests/:signrequest_uuid/cancel/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"signature-requests",
+								":signrequest_uuid",
+								"cancel",
+								""
+							],
+							"variable": [
+								{
+									"key": "signrequest_uuid",
+									"value": "{{sr_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Quick Signature Requests",
+			"item": [
+				{
+					"name": "Create QSR-EmbedURL",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subject\": \"embed url - doc url\",\n    \"message\": \"embed url, me and others, in person\",\n    \"who\": \"mo\",\n    \"signers\": [\n        {\n            \"email\": \"sender's email goes here\",\n            \"embed_url_user_id\": \"mo1\"\n        },\n        {\n            \"email\": \"signer's email goes here\",\n            \"in_person\": true\n        },\n        {\n            \"email\": \"signer's email goes here\",\n            \"in_person\": true\n        },\n        {\n            \"email\": \"signer's email goes here\",\n            \"in_person\": true\n        }\n    ],\n    \"name\": \"test me and others - in person\",\n    \"file_from_url\": \"url for doc goes here\",\n    \"link_expire_days\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/signature-request-quick-create/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"signature-request-quick-create",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create QSR",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"is_being_prepared\": true,\n    \"subject\": \"SR subject goes here\",\n    \"message\": \"SR message goes here\",\n    \"who\": \"o\",\n    \"signers\": [\n        {\n            \"email\": \"signer's email goes here\"\n        }\n    ],\n    \"name\": \"name goes here\",\n    \"file_from_url\": \"url for doc goes here\",\n    \"link_expire_days\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/signature-request-quick-create/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"signature-request-quick-create",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Templates",
+			"item": [
+				{
+					"name": "ListTemplates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/templates/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"templates",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateValidTemplate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create Template. Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Create Template.Assert url key is not null.\", function () {\r",
+									"    pm.expect(jsonData.template_url).not.eql(null);\r",
+									"});\r",
+									"\r",
+									"//get the uuid for the created template.\r",
+									"pm.environment.set(\"template_uuid\", jsonData.template_url.split('/')[3]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"doc_uuid\": \"{{doc_uuid}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/templates/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"templates",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RetrieveTemplate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/templates/:template_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"templates",
+								":template_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "template_uuid",
+									"value": "{{template_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteTemplate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/templates/:template_id/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"templates",
+								":template_id",
+								""
+							],
+							"variable": [
+								{
+									"key": "template_id",
+									"value": "{{template_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search Docs",
+			"item": [
+				{
+					"name": "Search Docs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/documents-search/?name&status=si&who=o&format=csv&signer_data=1",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"documents-search",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": null,
+									"description": "Document name"
+								},
+								{
+									"key": "status",
+									"value": "si",
+									"description": "ne, se, vi, si, ca, de, xp"
+								},
+								{
+									"key": "who",
+									"value": "o",
+									"description": "o, mo, m"
+								},
+								{
+									"key": "format",
+									"value": "csv",
+									"description": "json(default), csv, xls"
+								},
+								{
+									"key": "signer_data",
+									"value": "1",
+									"description": "Set to 1 to export with each signer on a separate row"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Events List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/events/?document__status=de",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								""
+							],
+							"query": [
+								{
+									"key": "document__status",
+									"value": "de",
+									"description": "ne, se, vi, si, ca, de, xp"
+								},
+								{
+									"key": "document__uuid",
+									"value": "{{doc_uuid}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Event Retrieve",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/events/:event_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								":event_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "event_uuid",
+									"value": "{{event_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Webhooks",
+			"item": [
+				{
+					"name": "Create Webhook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create a Webhook. Assert Status code is 201.\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"webhook_uuid\", jsonData.uuid);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"signed alert\",\r\n  \"event_type\": \"signed\",\r\n  \"callback_url\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/webhooks/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve List - Webhooks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/webhooks/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a Webhook",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/webhooks/:webhook_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								":webhook_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "webhook_uuid",
+									"value": "{{webhook_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Webhook",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"string\",\r\n  \"event_type\": \"convert_error\",\r\n  \"callback_url\": \"http://example.com\",\r\n  \"integration\": \"core\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/webhooks/:webhook_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								":webhook_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "webhook_uuid",
+									"value": "{{webhook_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partially update a Webhook",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"string\",\r\n  \"event_type\": \"convert_error\",\r\n  \"callback_url\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/webhooks/:webhook_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								":webhook_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "webhook_uuid",
+									"value": "{{webhook_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Webhook",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/webhooks/:webhook_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								":webhook_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "webhook_uuid",
+									"value": "{{webhook_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Branding",
+			"item": [
+				{
+					"name": "GetBrandList",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"GetBrandList. Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.environment.set(\"default_uuid\", jsonData.results[0].uuid);\r",
+									"pm.environment.set(\"brand_uuid\", jsonData.results[1].uuid);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/brandings/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"brandings",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a branding",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/brandings/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"brandings",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{brand_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateBrand",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"brand_uuid\", jsonData.uuid);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "logo",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "product_name",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/brandings/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"brandings",
+								""
+							]
+						},
+						"description": "jpg, jpeg, png, tiff, eps, ico, gif, bmp"
+					},
+					"response": []
+				},
+				{
+					"name": "PartialUpdateBrand",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "logo",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "product_name",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "help_link",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/brandings/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"brandings",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{brand_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBrand",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "logo",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "product_name",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "help_link",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/brandings/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"brandings",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{brand_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteBrand",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/brandings/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"brandings",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{brand_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Defaults",
+			"item": [
+				{
+					"name": "Get All Customizations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"custom_uuid\", jsonData.results[0].uuid);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"defaults",
+								"signing-flow-customizations",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Customization",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"defaults",
+								"signing-flow-customizations",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{custom_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Customization",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"custom_uuid\", jsonData.uuid);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "login_modal",
+									"value": "bypassed",
+									"type": "text"
+								},
+								{
+									"key": "signature_completion_redirect_url",
+									"value": "https://bibalex.org",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"defaults",
+								"signing-flow-customizations",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Replace Cutomization",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"login_modal\": \"string\",\r\n  \"signature_completion_redirect_url\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"defaults",
+								"signing-flow-customizations",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{custom_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customization",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"signature_completion_redirect_url\": \"http://bibalex.org\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"defaults",
+								"signing-flow-customizations",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{custom_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customization",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"defaults",
+								"signing-flow-customizations",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{custom_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Allowed File Types",
+			"item": [
+				{
+					"name": "allowed_file_types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1//allowed-file-types/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"",
+								"allowed-file-types",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "username",
+				"value": "{{email}}",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "{{client_secret_site}}",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "{{client_id_site}}",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "{{token_url_site}}",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "User",
+				"type": "string"
+			},
+			{
+				"key": "tokenType",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "accessToken",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "scope",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "challengeAlgorithm",
+				"value": "S256",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "password_credentials",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "body",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
