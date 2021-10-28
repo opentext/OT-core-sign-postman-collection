@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "e5406379-1723-4b74-9c4d-19688dfa8d0d",
 		"name": "CoreSign Apis - Main",
+		"description": "A sample Postman collection for Core Signature Service is available <a href=\"https://github.com/opentext/OT-core-sign-postman-collection\"><b>here</b></a>.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
