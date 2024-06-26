@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "e5406379-1723-4b74-9c4d-19688dfa8d0d",
+		"_postman_id": "747e88a9-b713-4d0e-8595-5a153450e52b",
 		"name": "CoreSign Apis - Main",
 		"description": "A sample Postman collection for Core Signature Service is available <a href=\"https://github.com/opentext/OT-core-sign-postman-collection\"><b>here</b></a>.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29867639"
 	},
 	"item": [
 		{
@@ -29,10 +30,20 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{signature_url}}/api/v1/documents/?status=si",
+							"raw": "{{signature_url}}/api/v1/documents/",
 							"host": [
 								"{{signature_url}}"
 							],
@@ -45,7 +56,8 @@
 							"query": [
 								{
 									"key": "status",
-									"value": "si"
+									"value": "si",
+									"disabled": true
 								},
 								{
 									"key": "page",
@@ -64,11 +76,11 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Create Document. Assert Status code is 201\", function () {\r",
-									"    pm.response.to.have.status(201);\r",
+									"pm.test(\"Create a Signature Request. Assert Status code is 201.\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
 									"});\r",
 									"var jsonData = pm.response.json();\r",
-									"pm.environment.set(\"doc_uuid\", jsonData.uuid);"
+									"pm.environment.set(\"sr_uuid\", jsonData.uuid);"
 								],
 								"type": "text/javascript"
 							}
@@ -80,24 +92,17 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
+								"value": "application/json",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "formdata",
 							"formdata": [
 								{
-									"key": "file_from_url",
-									"value": "",
-									"description": "url for doc goes here",
-									"type": "text"
-								},
-								{
-									"key": "name",
-									"value": "",
-									"description": "document name ",
-									"type": "text"
+									"key": "file",
+									"type": "file",
+									"src": ""
 								}
 							]
 						},
@@ -147,7 +152,7 @@
 							"variable": [
 								{
 									"key": "doc_id",
-									"value": "{{doc_uuid}}"
+									"value": ""
 								}
 							]
 						}
@@ -407,7 +412,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"is_being_prepared\": false,\n  \"subject\": \"CreateSR-1Signer-OnlyOthers\",\n  \"message\": \"1 signer\",\n  \"who\": \"o\",\n  \"send_reminders\": true,\n  \"signers\": [\n    {\n      \"email\": \"signer's email\",\n      \"first_name\": \"signer first name\",\n      \"last_name\": \"signer last name\",\n      \"needs_to_sign\": true,\n      \"order\": 0,\n      \"language\": \"en\"\n    }\n  ],\n  \"document\": \"{{signature_url_body}}/api/v1/documents/{{doc_uuid}}/\"\n}",
+							"raw": "{\n    \"subject\": \"dev test sr\",\n    \"message\": \"dev test testing, SR\",\n    \"document\": \"https://sign.core.opentext.com/api/v1/documents/{{doc_uuid}}/\",\n    \"signers\": [\n        {\n            \"email\": \"example+1@opentext.com\"\n        },\n        {\n            \"email\": \"example@opentext.com\"\n\n        }\n        \n    ],\n    \"who\": \"o\",\n    \"is_being_prepared\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -566,7 +571,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"subject\": \"embed url - doc url\",\n    \"message\": \"embed url, me and others, in person\",\n    \"who\": \"mo\",\n    \"signers\": [\n        {\n            \"email\": \"sender's email goes here\",\n            \"embed_url_user_id\": \"mo1\"\n        },\n        {\n            \"email\": \"signer's email goes here\",\n            \"in_person\": true\n        },\n        {\n            \"email\": \"signer's email goes here\",\n            \"in_person\": true\n        },\n        {\n            \"email\": \"signer's email goes here\",\n            \"in_person\": true\n        }\n    ],\n    \"name\": \"test me and others - in person\",\n    \"file_from_url\": \"url for doc goes here\",\n    \"link_expire_days\": 1\n}",
+							"raw": "{\n    \"subject\": \"embed url - doc url\",\n    \"is_being_prepared\":true,\n    \"message\": \"embed url, me and others, in person\",\n    \"who\": \"mo\",\n    \"events_callback_url\":\"\",\n    \"signers\": [\n        {\n            \"email\": \"sender's email goes here\",\n            \"embed_url_user_id\": \"mo1\"\n        },\n        {\n            \"email\": \"signer's email goes here\",\n            \"in_person\": true\n        },\n        {\n            \"email\": \"signer's email goes here\",\n            \"in_person\": true\n        },\n        {\n            \"email\": \"signer's email goes here\",\n            \"in_person\": true\n        }\n    ],\n    \"name\": \"test me and others - in person\",\n    \"file_from_url\": \"https://sign.core.opentext.com/static/demo/signature_request_demo_document.pdf\",\n    \"link_expire_days\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -595,7 +600,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"is_being_prepared\": true,\n    \"subject\": \"SR subject goes here\",\n    \"message\": \"SR message goes here\",\n    \"who\": \"o\",\n    \"signers\": [\n        {\n            \"email\": \"signer's email goes here\"\n        }\n    ],\n    \"name\": \"name goes here\",\n    \"file_from_url\": \"url for doc goes here\",\n    \"link_expire_days\": 1\n}",
+							"raw": "{\n    \"subject\": \"staging test QSR\",\n    \"message\": \"test testing QSR\",\n    // \"file_from_url\": \"https://sign.core.opentext.com/static/demo/signature_request_demo_document.pdf\",\n    \"signers\": [\n       \n        {\n            \"email\": \"example@opentext.com\",\n            \"embed_url_user_id\":\"01\"\n        }\n    ],\n    \"who\": \"o\",\n    \"show_options\":true,\n    \"template\": \"https://sign.core.opentext.com/api/v1/templates/<UUID>/\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -797,7 +802,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{signature_url}}/api/v1/documents-search/?name&status=si&who=o&format=csv&signer_data=1",
+							"raw": "{{signature_url}}/api/v1/documents-search/?name=&status=si&who=o&format=csv&signer_data=1",
 							"host": [
 								"{{signature_url}}"
 							],
@@ -810,7 +815,7 @@
 							"query": [
 								{
 									"key": "name",
-									"value": null,
+									"value": "",
 									"description": "Document name"
 								},
 								{
@@ -929,7 +934,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"signed alert\",\r\n  \"event_type\": \"signed\",\r\n  \"callback_url\": \"\"\r\n}",
+							"raw": "{\r\n  \"name\": \"draft_deleted alert\",\r\n  \"event_type\": \"draft_deleted\",\r\n  \"callback_url\": \"<UUID>"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1452,7 +1457,7 @@
 								},
 								{
 									"key": "signature_completion_redirect_url",
-									"value": "https://bibalex.org",
+									"value": "<URL>",
 									"type": "text",
 									"disabled": true
 								}
@@ -1518,7 +1523,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"signature_completion_redirect_url\": \"http://bibalex.org\"\r\n}",
+							"raw": "{\r\n  \"signature_completion_redirect_url\": \"<URL>\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1554,7 +1559,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/:uuid/",
+							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/<UUID>/",
 							"host": [
 								"{{signature_url}}"
 							],
@@ -1563,14 +1568,8 @@
 								"v1",
 								"defaults",
 								"signing-flow-customizations",
-								":uuid",
+								"<UUID>",
 								""
-							],
-							"variable": [
-								{
-									"key": "uuid",
-									"value": "{{custom_uuid}}"
-								}
 							]
 						}
 					},
@@ -1609,13 +1608,8 @@
 		"type": "oauth2",
 		"oauth2": [
 			{
-				"key": "username",
-				"value": "{{email}}",
-				"type": "string"
-			},
-			{
-				"key": "password",
-				"value": "{{password}}",
+				"key": "grant_type",
+				"value": "password_credentials",
 				"type": "string"
 			},
 			{
@@ -1634,6 +1628,21 @@
 				"type": "string"
 			},
 			{
+				"key": "scope",
+				"value": "otds:roles",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{email}}",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			},
+			{
 				"key": "tokenName",
 				"value": "User",
 				"type": "string"
@@ -1649,18 +1658,8 @@
 				"type": "string"
 			},
 			{
-				"key": "scope",
-				"value": "",
-				"type": "string"
-			},
-			{
 				"key": "challengeAlgorithm",
 				"value": "S256",
-				"type": "string"
-			},
-			{
-				"key": "grant_type",
-				"value": "password_credentials",
 				"type": "string"
 			},
 			{

@@ -1,0 +1,3326 @@
+{
+	"info": {
+		"_postman_id": "c181ded6-cf0e-42ae-8518-7f318df3eccf",
+		"name": "sign-collection",
+		"description": "A sample Postman collection for Core Signature Service is available <a href=\"https://github.com/opentext/OT-core-sign-postman-collection\"><b>here</b></a>.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "22086469"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "GenerateToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response schema is valid\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.access_token).to.be.a('string');\r",
+									"    pm.expect(responseData.refresh_token).to.be.a('string');\r",
+									"    pm.expect(responseData.token_type).to.be.a('string');\r",
+									"    pm.expect(responseData.expires_in).to.be.a('number');\r",
+									"\r",
+									"    pm.environment.set(\"tmp_org_access_token\", responseData.access_token);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Access token is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.access_token).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Access token should not be empty\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Token type is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.token_type).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Token type should not be empty\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"username": "{{app_confclient_id}}",
+								"password": "{{app_confclient_secret}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "otds:roles",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "{{user_name}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{user_password}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{tenant_token_url}}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Docs",
+			"item": [
+				{
+					"name": "ListDocs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response has the required fields - count, next, previous, results\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('count');",
+									"    pm.expect(responseData.count >= 0)",
+									"    pm.expect(responseData).to.have.property('next');",
+									"    pm.expect(responseData).to.have.property('previous');",
+									"    pm.expect(responseData).to.have.property('results');",
+									"});",
+									"",
+									"pm.test(\"Results array is present and contains expected number of elements\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.results).to.exist;",
+									"    pm.expect(responseData.results).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": ""
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/documents/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"documents",
+								""
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "si",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateDocFromValidURL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.environment.set(\"doc_uuid\", responseData.uuid);\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('uuid');\r",
+									"    \r",
+									"    pm.expect(responseData).not.empty;\r",
+									"    pm.expect(responseData.url).to.be.a('string');\r",
+									"    pm.expect(responseData.uuid).to.be.a('string');\r",
+									"    pm.expect(responseData.url).not.null;\r",
+									"    pm.expect(responseData.uuid).not.null;\r",
+									"    pm.expect(responseData.api_used).to.be.true;\r",
+									"\r",
+									"    pm.expect(responseData.status).to.be.oneOf(['ne','co','ec']);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User email is in a valid format\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.user.email).to.be.a('string').and.to.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"file_from_url\": \"{{demo_file}}\"\r\n}"
+						},
+						"url": "{{signature_url}}/api/v1/documents/"
+					},
+					"response": []
+				},
+				{
+					"name": "RetrieveDoc",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response details RetriveDoc\", function () {\r",
+									"    if (pm.response.code === 200) {\r",
+									"        const responseData = pm.response.json();\r",
+									"        \r",
+									"        pm.environment.set(\"doc_uuid\", responseData.uuid);\r",
+									"\r",
+									"        pm.expect(responseData).to.be.an('object');\r",
+									"\t\tpm.expect(responseData.url).to.exist;\r",
+									"\t\tpm.expect(responseData.uuid).to.exist;\r",
+									"\t\tpm.expect(responseData.user).to.exist;\r",
+									"\t\tpm.expect(responseData.name).to.exist;\r",
+									"\t\tpm.expect(responseData.status).to.exist;\r",
+									"\r",
+									"        pm.test(\"User email is in a valid format\", function () {\r",
+									"\t\t\tconst responseData = pm.response.json();\r",
+									"  \r",
+									"\t\t\tpm.expect(responseData.user.email).to.be.a('string');\r",
+									"\t\t\tpm.expect(responseData.user.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);\r",
+									"\t\t});\r",
+									"\t\t\r",
+									"\t\tpm.test(\"Attachments array is present and contains expected number of elements\", function () {\r",
+									"\t\t\tconst responseData = pm.response.json();\r",
+									"    \r",
+									"\t\t\tpm.expect(responseData).to.be.an('object');\r",
+									"\t\t\tpm.expect(responseData.attachments).to.be.an('array');\r",
+									"\t\t\tpm.expect(responseData.attachments.length).to.be.at.least(0);\r",
+									"\t\t});\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/documents/:doc_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"documents",
+								":doc_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "doc_uuid",
+									"value": "{{doc_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteDoc",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.text();\r",
+									"\r",
+									"pm.test(\"Deletetion status\", function () {\r",
+									"  if (pm.response.code === 404) {\r",
+									"     pm.expect(pm.response.code).to.equal(404);\r",
+									"     pm.test(\"Detail field is a non-empty string\", function () {\r",
+									"        pm.expect(responseData).to.include(\"Not found.\");\r",
+									"    });\r",
+									"  }\r",
+									"\r",
+									"  if (pm.response.code === 204) {\r",
+									"    pm.expect(pm.response.code).to.equal(204);\r",
+									"  }\r",
+									"\r",
+									"  if (pm.response.code === 403) {\r",
+									"    pm.expect(pm.response.code).to.equal(403);\r",
+									"\r",
+									"    pm.test(\"Signature Request action is not complete\", function () {\r",
+									"        \r",
+									"        pm.expect(responseData).to.include(\"DOCUMENT_HAS_UNFINISHED_SIGNATURE_REQUEST\");\r",
+									"    });\r",
+									"  }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"force_delete\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{signature_url}}/api/v1/documents/{{doc_uuid}}/"
+					},
+					"response": []
+				},
+				{
+					"name": "CreateDocFromcontent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.environment.set(\"doc_uuid\", responseData.uuid);\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('uuid');\r",
+									"\t\r",
+									"\tpm.expect(responseData).not.empty;\r",
+									"    pm.expect(responseData.url).to.be.a('string');\r",
+									"    pm.expect(responseData.uuid).to.be.a('string');\r",
+									"    pm.expect(responseData.url).not.null;\r",
+									"    pm.expect(responseData.uuid).not.null;\r",
+									"    pm.expect(responseData.api_used).to.be.true;\r",
+									"\r",
+									"    pm.expect(responseData.status).to.be.oneOf(['ne','co','ec']);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User email is in a valid format\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.user.email).to.be.a('string').and.to.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"file_from_content\": \"{{filefromcontent}}\",\r\n  \"file_from_content_name\":\"{{filename}}\"\r\n}"
+						},
+						"url": "{{signature_url}}/api/v1/documents/"
+					},
+					"response": []
+				}
+			],
+			"description": "Documents Upload/Retrive and Delete."
+		},
+		{
+			"name": "DocAttachment",
+			"item": [
+				{
+					"name": "RetrieveAttachList",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response has the required fields - count, next, previous, and results\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('count');",
+									"    pm.expect(responseData).to.have.property('next');",
+									"    pm.expect(responseData).to.have.property('previous');",
+									"    pm.expect(responseData).to.have.property('results');",
+									"});",
+									"",
+									"pm.test(\"Count is a non-negative integer\", function () {",
+									"  const responseData = pm.response.json();",
+									"  ",
+									"  pm.expect(responseData.count).to.be.a('number');",
+									"  pm.expect(responseData.count).to.be.at.least(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/document-attachments/?document__external_id=&created={{create_date}}&page={{page_num}}&limit={{count}}&document__uuid={{doc_uuid}}",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"document-attachments",
+								""
+							],
+							"query": [
+								{
+									"key": "document__external_id",
+									"value": ""
+								},
+								{
+									"key": "created",
+									"value": "{{create_date}}"
+								},
+								{
+									"key": "page",
+									"value": "{{page_num}}"
+								},
+								{
+									"key": "limit",
+									"value": "{{count}}"
+								},
+								{
+									"key": "document__uuid",
+									"value": "{{doc_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Doc Attach",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.environment.set(\"attach_uuid\", responseData.uuid);\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('url');\r",
+									"    pm.expect(responseData).to.have.property('uuid');\r",
+									"    pm.expect(responseData).to.have.property('document');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"UUID is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.uuid).to.be.a('string').and.to.have.lengthOf.at.least(1, \"UUID should not be empty\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "attach_name.pdf",
+									"type": "text"
+								},
+								{
+									"key": "file_from_content",
+									"value": "{{filefromcontent}}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "file_from_content_name",
+									"value": "{{filename}}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "file_from_url",
+									"value": "{{demo_file}}",
+									"type": "text"
+								},
+								{
+									"key": "document",
+									"value": "{{signature_url}}/api/v1/documents/{{doc_uuid}}/",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{signature_url}}/api/v1/document-attachments/"
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a DocAttach",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.url).to.exist;\r",
+									"    pm.expect(responseData.uuid).to.exist;\r",
+									"    pm.expect(responseData.document).to.exist;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/document-attachments/:attach_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"document-attachments",
+								":attach_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "attach_uuid",
+									"value": "{{attach_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Doc Attachment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.text();\r",
+									"\r",
+									"pm.test(\"Deletetion status\", function () {\r",
+									"  if (pm.response.code === 404) {\r",
+									"     pm.expect(pm.response.code).to.equal(404);\r",
+									"     pm.test(\"Detail field is a non-empty string\", function () {\r",
+									"        pm.expect(responseData).to.include(\"Not found.\");\r",
+									"    });\r",
+									"  }\r",
+									"\r",
+									"  if (pm.response.code === 204) {\r",
+									"    pm.expect(pm.response.code).to.equal(204);\r",
+									"  }\r",
+									"  \r",
+									"  if (pm.response.code === 403) {\r",
+									"    pm.expect(pm.response.code).to.equal(403);\r",
+									"\r",
+									"    pm.test(\"Signature Request action is not complete\", function () {\r",
+									"        pm.expect(responseData).to.include(\"Cannot delete an attachment from a document with a signature request\");\r",
+									"    });\r",
+									"  }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/document-attachments/:attach_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"document-attachments",
+								":attach_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "attach_uuid",
+									"value": "{{attach_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Document Attachment details."
+		},
+		{
+			"name": "SignatureRequests",
+			"item": [
+				{
+					"name": "Create SignRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Signature Request creation status\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    if (pm.response.code === 400) {\r",
+									"        pm.expect(pm.response.code).to.equal(400);\r",
+									"        pm.test(\"Not able to send Signature Request\", function () {\r",
+									"            pm.expect(responseData.document[0]).to.be.oneOf([\"This document already has a signature request created for it.\",\"Invalid hyperlink - Object does not exist.\",\"This field is required.\"]);\r",
+									"        });\r",
+									"    }\r",
+									"\r",
+									"    if (pm.response.code === 201) {\r",
+									"        pm.test(\"Response has the required fields\", function () {\r",
+									"        \r",
+									"            pm.environment.set(\"sr_uuid\", responseData.uuid);\r",
+									"\r",
+									"            pm.expect(responseData).to.be.an('object');\r",
+									"            pm.expect(responseData).to.have.property('uuid');\r",
+									"        \r",
+									"            pm.expect(responseData).not.empty;\r",
+									"            pm.expect(responseData.from_email).not.null;\r",
+									"\r",
+									"            pm.expect(responseData.url).to.be.a('string');\r",
+									"            pm.expect(responseData.uuid).to.be.a('string');\r",
+									"            pm.expect(responseData.document).to.be.a('string');\r",
+									"            pm.expect(responseData.from_email).to.be.a('string');\r",
+									"        });\r",
+									"        pm.test(\"Sender email is in a valid format\", function () {\r",
+									"            pm.expect(responseData.from_email).to.be.a('string');\r",
+									"            pm.expect(responseData.from_email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);\r",
+									"        });\r",
+									"    }\r",
+									"    if (pm.response.code === 404) {\r",
+									"        pm.expect(pm.response.code).to.equal(404);\r",
+									"        pm.test(\"Detail field is a non-empty string\", function () {\r",
+									"            pm.expect(responseData).to.include(\"Not found.\");\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"is_being_prepared\": {{isprepared}},\n    \"redirect_url\": \"{{redirecturl}}\",\n    \"required_attachments\": \n    [\n\n        {\n            \"name\": \"{{attachmentneeded}}\"\n        }\n\n    ],\n\"disable_initials\": true,\n\"disable_attachments\": false,\n\"disable_text_signatures\": true,\n\"disable_checkbox\": true,\n\"disable_text\": true,\n\"disable_date\": true,\n\"disable_emails\": true,\n\"disable_upload_signatures\": true,\n\"disable_forward\": true,\n\"disable_decline\": true,\n\"subject\": \"{{emailsubject}}\",\n\"message\": \"{{emailmessage}}\",\n\"who\": \"o\",\n\"send_reminders\": true,\n\"show_options\": true,\n\"signers\": \n    [\n        {\n        \"email\": \"user@example.com\",\n        \"first_name\": \"\",\n        \"last_name\": \"\",\n        \"full_name\": \"\",\n        \"needs_to_sign\": true,\n        \"approve_only\": false,\n        \"auto_approval\": false,\n        \"notify_only\": false,\n        \"in_person\": false,\n        \"order\": 0,\n        \"language\": \"en\",\n        \"force_language\": true,\n        \"cancelled\": true,\n        \"redirect_url\": \"{{redirecturl}}\",\n        /*\n        \"integrations\": \n        [\n            {\n                \"integration_data\": {\n                    \"type\": \"{{integrationtype}}\",\n                    \"department\": \"{{departmenttype}}\"\n                 }\n            }\n        ],\n        */\n        \"password\": \"{{srpassword}}\",\n        \"email_otp\": false,\n        \"signer_message\": \"string\"\n        }\n    ],\n    \"document\": \"{{signature_url}}/api/v1/documents/{{doc_uuid}}/\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{signature_url}}/api/v1/signature-requests/"
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve List of Signature Requests",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response has the required fields - count, next, previous, results\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('count');",
+									"    pm.expect(responseData).to.have.property('next');",
+									"    pm.expect(responseData).to.have.property('previous');",
+									"    pm.expect(responseData).to.have.property('results');",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/signature-requests/?status={{srstatus}}",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"signature-requests",
+								""
+							],
+							"query": [
+								{
+									"key": "who",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "from_email",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "{{srstatus}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a SignatureRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.include.all.keys('from_email', 'from_email_name', 'is_being_prepared', 'required_attachments', 'signers', 'uuid', 'url', 'document');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/signature-requests/:signature_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"signature-requests",
+								":signature_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "signature_uuid",
+									"value": "{{sr_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend SignatureRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response has the required field - detail\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    if (pm.response.code === 400) {\r",
+									"        pm.expect(responseData).to.be.an('object');\r",
+									"        pm.expect(responseData.detail).to.exist;\r",
+									"        pm.expect(responseData.detail).to.be.oneOf([\"ERROR_SIGNATURE_REQUEST_RESENT_TOO_SOON\", \"ERROR_SIGNATURE_REQUEST_FINISHED\",\"ERROR_SIGNATURE_REQUEST_IN_PRE_SENT_STATE\"]);\r",
+									"    }\r",
+									"\r",
+									"    if (pm.response.code === 404) {\r",
+									"        pm.expect(pm.response.code).to.equal(404);\r",
+									"        pm.test(\"Detail field is missing required input\", function () {\r",
+									"            pm.expect(responseData.detail).to.include(\"Not found.\");\r",
+									"        });\r",
+									"    }\r",
+									"\r",
+									"    if (pm.response.code === 403) {\r",
+									"        pm.expect(pm.response.code).to.equal(403);\r",
+									"        pm.test(\"Verify user authetication\", function () {\r",
+									"            pm.expect(responseData.detail).to.include(\"Authentication credentials were not provided.\");\r",
+									"        });\r",
+									"    }\r",
+									"    if (pm.response.code === 201) {\r",
+									"        pm.expect(pm.response.code).to.equal(201);\r",
+									"        pm.test(\"Detail field is missing required input\", function () {\r",
+									"            pm.expect(responseData.detail).to.include(\"SIGNATURE_REQUEST_EMAIL_RESENT\");\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/signature-requests/:signature_uuid/resend/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"signature-requests",
+								":signature_uuid",
+								"resend",
+								""
+							],
+							"variable": [
+								{
+									"key": "signature_uuid",
+									"value": "{{sr_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel SignRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response has the required fields - detail and cancelled\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    if (pm.response.code === 200) {",
+									"        pm.expect(responseData).to.be.an('object');",
+									"        pm.expect(responseData).to.have.property('detail');",
+									"        pm.expect(responseData).to.have.property('cancelled');",
+									"        pm.expect(responseData.cancelled).to.be.a('boolean');",
+									"    }",
+									"",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/signature-requests/:signature_uuid/cancel/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"signature-requests",
+								":signature_uuid",
+								"cancel",
+								""
+							],
+							"variable": [
+								{
+									"key": "signature_uuid",
+									"value": "{{sr_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Create, Retrive and post details."
+		},
+		{
+			"name": "Quick Signature Requests",
+			"item": [
+				{
+					"name": "Create QSR-EmbedURL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response details for Quick Siganture Request - QSR Embed URL\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    if (pm.response.code === 404) {\r",
+									"        pm.expect(responseData).to.be.an('object');\r",
+									"        pm.expect(responseData.detail).to.exist;\r",
+									"        pm.expect(responseData.detail).to.be.oneOf([\"Not found.\"]);\r",
+									"    }\r",
+									"    \r",
+									"    if (pm.response.code === 200) {\r",
+									"        pm.environment.set(\"doc_uuid\", responseData.uuid);\r",
+									"\r",
+									"        pm.expect(responseData).to.be.an('object');\r",
+									"        pm.expect(responseData).to.have.property('uuid');\r",
+									"        pm.expect(responseData).to.have.property('is_being_prepared');\r",
+									"        pm.expect(responseData.is_being_prepared).to.be.true;\r",
+									"        pm.expect(responseData).not.empty;\r",
+									"        pm.expect(responseData.prepare_url).to.be.a('string');\r",
+									"        pm.expect(responseData.uuid).to.be.a('string');\r",
+									"        pm.expect(responseData.prepare_url).not.null;\r",
+									"        pm.expect(responseData.uuid).not.null;\r",
+									"        pm.expect(responseData.api_used).to.be.true;\r",
+									"        pm.expect(responseData.status).to.be.oneOf(['ne','co','ec']);\r",
+									"\r",
+									"        pm.test(\"User email is in a valid format\", function () {\r",
+									"            const responseData = pm.response.json();\r",
+									"            pm.expect(responseData.user.email).to.be.a('string').and.to.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/);\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subject\": \"{{emailsubject}}\",\n    \"is_being_prepared\":true,\n    \"message\": \"{{emailmessage}}\",\n    \"who\": \"mo\",\n    \"events_callback_url\":\"{{webhookurl}}\",\n    \"signers\": [\n        {\n            \"email\": \"{{emailid1}}\",\n            \"embed_url_user_id\": \"mo1\"\n        },\n        {\n            \"email\": \"{{emailid2}}\",\n            \"in_person\": true\n        }\n    ],\n    \"name\": \"{{sample_name}}\",\n    \"file_from_url\": \"{{demo_file}}\",\n    \"link_expire_days\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{signature_url}}/api/v1/signature-request-quick-create/"
+					},
+					"response": []
+				},
+				{
+					"name": "Create QSR",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response details for Quick Siganture Request - QSR Embed URL\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    if (pm.response.code === 404) {\r",
+									"        pm.expect(responseData).to.be.an('object');\r",
+									"        pm.expect(responseData.detail).to.exist;\r",
+									"        pm.expect(responseData.detail).to.be.oneOf([\"Not found.\"]);\r",
+									"    }\r",
+									"    \r",
+									"    if (pm.response.code === 200) {\r",
+									"        pm.environment.set(\"doc_uuid\", responseData.uuid);\r",
+									"\r",
+									"        pm.expect(responseData).to.be.an('object');\r",
+									"        pm.expect(responseData).to.have.property('uuid');\r",
+									"        pm.expect(responseData).to.have.property('is_being_prepared');\r",
+									"        pm.expect(responseData.is_being_prepared).to.be.false;\r",
+									"        pm.expect(responseData).not.empty;\r",
+									"        pm.expect(responseData.uuid).to.be.a('string');\r",
+									"        pm.expect(responseData.uuid).not.null;\r",
+									"        pm.expect(responseData.api_used).to.be.true;\r",
+									"        pm.expect(responseData.status).to.be.oneOf(['ne','co','ec']);\r",
+									"\r",
+									"        pm.test(\"User email is in a valid format\", function () {\r",
+									"            const responseData = pm.response.json();\r",
+									"            pm.expect(responseData.user.email).to.be.a('string').and.to.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/);\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"is_being_prepared\": false,\n    \"subject\": \"{{emailsubject}}\",\n    \"message\": \"{{emailmessage}}\",\n    \"who\": \"o\",\n    \"required_attachments\": [\n        {\n            \"name\": \"photo id\"\n        }\n    ],\n    \"signers\": [\n        {\n            \"email\": \"{{emailid1}}\",\n            \"order\": \"1\"\n        },\n        {\n            \"email\": \"{{emailid2}}\",\n            \"order\": \"2\"\n        }\n    ],\n    \"name\": \"name goes here\",\n    \"file_from_content\": \"{{filefromcontent}}\",\n    \"file_from_content_name\": \"{{filename}}\",\n    \"auto_expire_days\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{signature_url}}/api/v1/signature-request-quick-create/"
+					},
+					"response": []
+				}
+			],
+			"description": "Quick signature request."
+		},
+		{
+			"name": "Templates",
+			"item": [
+				{
+					"name": "ListTemplates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields - count, next, previous, results\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('count');\r",
+									"    pm.expect(responseData.count >= 0)\r",
+									"    pm.expect(responseData).to.have.property('next');\r",
+									"    pm.expect(responseData).to.have.property('previous');\r",
+									"    pm.expect(responseData).to.have.property('results');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Results array is present and contains expected number of elements\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.results).to.exist;\r",
+									"    pm.expect(responseData.results).to.be.an('array');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{signature_url}}/api/v1/templates/"
+					},
+					"response": []
+				},
+				{
+					"name": "CreateValidTemplate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create Template. Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Create Template.Assert url key is not null.\", function () {\r",
+									"    pm.expect(jsonData.template_url).not.eql(null);\r",
+									"});\r",
+									"\r",
+									"//get the uuid for the created template.\r",
+									"pm.environment.set(\"template_uuid\", jsonData.template_url.split('/')[3]);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"doc_uuid\": \"{{doc_uuid}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{signature_url}}/api/v1/templates/"
+					},
+					"response": []
+				},
+				{
+					"name": "RetrieveTemplate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response details RetriveTemplate using UUID\", function () {\r",
+									"    if (pm.response.code === 200) {\r",
+									"        const responseData = pm.response.json();\r",
+									" \r",
+									"        pm.expect(responseData).to.be.an('object');\r",
+									"\t\tpm.expect(responseData.url).to.exist;\r",
+									"\t\tpm.expect(responseData.uuid).to.exist;\r",
+									"\r",
+									"\t\tpm.expect(responseData.name).to.exist;\r",
+									"\r",
+									"\t\t\r",
+									"\t\tpm.test(\"Attachments array is present and contains expected number of elements\", function () {\r",
+									"\t\t\tconst responseData = pm.response.json();\r",
+									"    \r",
+									"\t\t\tpm.expect(responseData).to.be.an('object');\r",
+									"\t\t\tpm.expect(responseData.attachments).to.be.an('array');\r",
+									"\t\t\tpm.expect(responseData.attachments.length).to.be.at.least(0);\r",
+									"\t\t});\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/templates/:template_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"templates",
+								":template_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "template_uuid",
+									"value": "{{template_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteTemplate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.text();\r",
+									"\r",
+									"pm.test(\"Template deletetion status\", function () {\r",
+									"  if (pm.response.code === 404) {\r",
+									"     pm.expect(pm.response.code).to.equal(404);\r",
+									"     pm.test(\"Detail field is a non-empty string\", function () {\r",
+									"        pm.expect(responseData).to.include(\"Not found.\");\r",
+									"    });\r",
+									"  }\r",
+									"\r",
+									"  if (pm.response.code === 204) {\r",
+									"    pm.expect(pm.response.code).to.equal(204);\r",
+									"  }\r",
+									"\r",
+									"  if (pm.response.code === 403) {\r",
+									"    pm.expect(pm.response.code).to.equal(403);\r",
+									"\r",
+									"    pm.test(\"Signature Request action is not complete\", function () {\r",
+									"        \r",
+									"        pm.expect(responseData).to.include(\"DOCUMENT_HAS_UNFINISHED_SIGNATURE_REQUEST\");\r",
+									"    });\r",
+									"  }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/templates/:template_id/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"templates",
+								":template_id",
+								""
+							],
+							"variable": [
+								{
+									"key": "template_id",
+									"value": "{{template_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Save and modify templates."
+		},
+		{
+			"name": "Search Docs",
+			"item": [
+				{
+					"name": "Search Docs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields - count, next, previous, results\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('count');\r",
+									"    pm.expect(responseData.count >= 0)\r",
+									"    pm.expect(responseData).to.have.property('next');\r",
+									"    pm.expect(responseData).to.have.property('previous');\r",
+									"    pm.expect(responseData).to.have.property('results');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Results array is present and contains expected number of elements\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.results).to.exist;\r",
+									"    pm.expect(responseData.results).to.be.an('array');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/documents-search/?name=&status=ne&who=o&format=json&signer_data=1",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"documents-search",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "",
+									"description": "Document name"
+								},
+								{
+									"key": "status",
+									"value": "ne",
+									"description": "ne, se, vi, si, ca, de, xp"
+								},
+								{
+									"key": "who",
+									"value": "o",
+									"description": "o, mo, m"
+								},
+								{
+									"key": "format",
+									"value": "json",
+									"description": "json(default), csv, xls"
+								},
+								{
+									"key": "signer_data",
+									"value": "1",
+									"description": "Set to 1 to export with each signer on a separate row"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Seach for uploaded and Signature request documents."
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Events List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields - count, next, previous, results\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('count');\r",
+									"    pm.expect(responseData.count >= 0)\r",
+									"    pm.expect(responseData).to.have.property('next');\r",
+									"    pm.expect(responseData).to.have.property('previous');\r",
+									"    pm.expect(responseData).to.have.property('results');\r",
+									"\r",
+									"    pm.environment.set(\"event_uuid\", responseData.results[0].uuid);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Results array is present and contains expected number of elements\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.results).to.exist;\r",
+									"    pm.expect(responseData.results).to.be.an('array');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/events/?document__status=&document__uuid=",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								""
+							],
+							"query": [
+								{
+									"key": "document__status",
+									"value": ""
+								},
+								{
+									"key": "document__uuid",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Event Retrieve",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response details RetriveDoc\", function () {\r",
+									"    if (pm.response.code === 200) {\r",
+									"        const responseData = pm.response.json();\r",
+									" \r",
+									"        pm.expect(responseData).to.be.an('object');\r",
+									"\t\tpm.expect(responseData.uuid).to.exist;\r",
+									"\t\tpm.expect(responseData.status).to.exist;\r",
+									"\t\tpm.expect(responseData.event_type).to.exist;\r",
+									"\t\tpm.expect(responseData.timestamp).to.exist;\r",
+									"\t\t\r",
+									"        pm.test(\"Validate Event Types\", function () {\r",
+									"\t\t\tconst responseData = pm.response.json();\r",
+									"  \r",
+									"\t\t\tpm.expect(responseData.event_type).to.be.a('string');\r",
+									"\t\t\tpm.expect(responseData.event_type).to.be.oneOf([\"convert_error\",\"converted\",\"sent\",\"declined\",\"cancelled\",\"expired\",\"signed\",\"draft_saved\",\"draft_deleted\",\"deleted\",\"viewed\",\"downloaded\",\"signer_signed\",\"signer_email_bounced\",\"signer_viewed_email\",\"signer_viewed\",\"signer_forwarded\",\"signer_downloaded\",\"signrequest_received\"])\r",
+									"\t\t});\r",
+									"\t\t\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/events/:event_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								":event_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "event_uuid",
+									"value": "{{event_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Webhooks",
+			"item": [
+				{
+					"name": "Retrieve List - Webhooks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields - count, next, previous, results\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('count');\r",
+									"    pm.expect(responseData.count >= 0)\r",
+									"    pm.expect(responseData).to.have.property('next');\r",
+									"    pm.expect(responseData).to.have.property('previous');\r",
+									"    pm.expect(responseData).to.have.property('results');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Results array is present and contains expected number of elements\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.results).to.exist;\r",
+									"    pm.expect(responseData.results).to.be.an('array');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/webhooks/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Webhook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create a Webhook. Assert Status code is 201.\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.environment.set(\"webhook_uuid\", responseData.uuid);\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('uuid');\r",
+									"    \r",
+									"    pm.expect(responseData).not.empty;\r",
+									"    pm.expect(responseData.event_type).to.be.a('string');\r",
+									"    pm.expect(responseData.uuid).to.be.a('string');\r",
+									"    pm.expect(responseData.callback_url).to.be.a('string');\r",
+									"\r",
+									"    pm.expect(responseData.event_type).not.null;\r",
+									"\r",
+									"\r",
+									"    pm.expect(responseData.event_type).to.be.oneOf([\"convert_error\",\"converted\",\"sent\",\"declined\",\"cancelled\",\"expired\",\"signed\",\"draft_saved\",\"draft_deleted\",\"deleted\",\"viewed\",\"downloaded\",\"signer_signed\",\"signer_email_bounced\",\"signer_viewed_email\",\"signer_viewed\",\"signer_forwarded\",\"signer_downloaded\",\"signrequest_received\"]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require('moment');\r",
+									"//var callback_urls = \"https://example.com\";\r",
+									"var callback_urls = \"https://example.com/?dt=\"+moment().format((\"YYYY-MM-DD-HH:mm:SS:ssssss\"))\r",
+									"pm.environment.set(\"callback_url\", callback_urls);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"draft_deleted alert\",\r\n  \"event_type\": \"draft_deleted\",\r\n  \"callback_url\": \"{{callback_url}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{signature_url}}/api/v1/webhooks/"
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a Webhook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create a Webhook. Assert Status code is 200.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('uuid');\r",
+									"    \r",
+									"    pm.expect(responseData).not.empty;\r",
+									"    pm.expect(responseData.event_type).to.be.a('string');\r",
+									"    pm.expect(responseData.uuid).to.be.a('string');\r",
+									"    pm.expect(responseData.callback_url).to.be.a('string');\r",
+									"\r",
+									"    pm.expect(responseData.event_type).not.null;\r",
+									"\r",
+									"\r",
+									"    pm.expect(responseData.event_type).to.be.oneOf([\"convert_error\",\"converted\",\"sent\",\"declined\",\"cancelled\",\"expired\",\"signed\",\"draft_saved\",\"draft_deleted\",\"deleted\",\"viewed\",\"downloaded\",\"signer_signed\",\"signer_email_bounced\",\"signer_viewed_email\",\"signer_viewed\",\"signer_forwarded\",\"signer_downloaded\",\"signrequest_received\"]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/webhooks/:webhook_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								":webhook_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "webhook_uuid",
+									"value": "{{webhook_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Webhook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create a Webhook. Assert Status code is 200.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('uuid');\r",
+									"    \r",
+									"    pm.expect(responseData).not.empty;\r",
+									"    pm.expect(responseData.event_type).to.be.a('string');\r",
+									"    pm.expect(responseData.uuid).to.be.a('string');\r",
+									"    pm.expect(responseData.callback_url).to.be.a('string');\r",
+									"\r",
+									"    pm.expect(responseData.event_type).not.null;\r",
+									"\r",
+									"\r",
+									"    pm.expect(responseData.event_type).to.be.oneOf([\"convert_error\",\"converted\",\"sent\",\"declined\",\"cancelled\",\"expired\",\"signed\",\"draft_saved\",\"draft_deleted\",\"deleted\",\"viewed\",\"downloaded\",\"signer_signed\",\"signer_email_bounced\",\"signer_viewed_email\",\"signer_viewed\",\"signer_forwarded\",\"signer_downloaded\",\"signrequest_received\"]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"string\",\r\n  \"event_type\": \"convert_error\",\r\n  \"callback_url\": \"http://example.com\",\r\n  \"integration\": \"core\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/webhooks/:webhook_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								":webhook_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "webhook_uuid",
+									"value": "{{webhook_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partially update a Webhook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create a Webhook. Assert Status code is 200.\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.environment.set(\"webhook_uuid\", responseData.uuid);\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('uuid');\r",
+									"    \r",
+									"    pm.expect(responseData).not.empty;\r",
+									"    pm.expect(responseData.event_type).to.be.a('string');\r",
+									"    pm.expect(responseData.uuid).to.be.a('string');\r",
+									"    pm.expect(responseData.callback_url).to.be.a('string');\r",
+									"\r",
+									"    pm.expect(responseData.event_type).not.null;\r",
+									"\r",
+									"\r",
+									"    pm.expect(responseData.event_type).to.be.oneOf([\"convert_error\",\"converted\",\"sent\",\"declined\",\"cancelled\",\"expired\",\"signed\",\"draft_saved\",\"draft_deleted\",\"deleted\",\"viewed\",\"downloaded\",\"signer_signed\",\"signer_email_bounced\",\"signer_viewed_email\",\"signer_viewed\",\"signer_forwarded\",\"signer_downloaded\",\"signrequest_received\"]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"string\",\r\n  \"event_type\": \"convert_error\",\r\n  \"callback_url\": \"{{redirecturl}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/webhooks/:webhook_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								":webhook_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "webhook_uuid",
+									"value": "{{webhook_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Webhook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.text();\r",
+									"\r",
+									"pm.test(\"Webhook Deletetion status\", function () {\r",
+									"\r",
+									"  if (pm.response.code === 204) {\r",
+									"    pm.expect(pm.response.code).to.equal(204);\r",
+									"  }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/webhooks/:webhook_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								":webhook_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "webhook_uuid",
+									"value": "{{webhook_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Branding",
+			"item": [
+				{
+					"name": "GetBrandList",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"GetBrandList. Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields - count, next, previous, results\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.environment.set(\"default_uuid\", responseData.results[0].uuid);\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('count');\r",
+									"    pm.expect(responseData.count >= 0)\r",
+									"    pm.expect(responseData).to.have.property('next');\r",
+									"    pm.expect(responseData).to.have.property('previous');\r",
+									"    pm.expect(responseData).to.have.property('results');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Results array is present and contains expected number of elements\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.results).to.exist;\r",
+									"    pm.expect(responseData.results).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{signature_url}}/api/v1/brandings/"
+					},
+					"response": []
+				},
+				{
+					"name": "CreateBrand",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create a new Brand with logo\", function () {\r",
+									"        if (pm.response.code === 201) {\r",
+									"            pm.test(\"Response has the required fields - brand_context, logo, product_name\", function () {\r",
+									"            const responseData = pm.response.json();\r",
+									"\r",
+									"            pm.environment.set(\"brand_uuid\", responseData.uuid);\r",
+									"\r",
+									"            pm.expect(responseData).to.be.an('object');\r",
+									"            pm.expect(responseData.brand_context).to.exist;\r",
+									"            pm.expect(responseData.logo).to.exist;\r",
+									"            pm.expect(responseData.product_name).to.exist;\r",
+									"        });\r",
+									"    }\r",
+									"    /*\r",
+									"    if (pm.response.code === 400) {\r",
+									"        const responseData = pm.response.json();\r",
+									"          pm.expect(responseData[0]).to.oneOf([\"ERROR_NO_FILE_UPLOADED\",\"ERROR_DATA_IS_NOT_A_FILE\",\"ERROR_FILE_IS_NOT_AN_IMAGE\",\"ERROR_BRANDING_ALREADY_EXISTS\",\"ERROR_FILE_PARSING_FAILED\",\"ERROR_INVALID_URL_PROTOCOL\",\"ERROR_FIELD_REQUIRED\",\"ERROR_FIELD_MAY_NOT_BE_BLANK\"])\r",
+									"    }\r",
+									"    */\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "logo",
+									"type": "file",
+									"src": "/C:/Dev/Postman2/sample-logo.jpg"
+								},
+								{
+									"key": "product_name",
+									"value": "TEST",
+									"type": "text"
+								},
+								{
+									"key": "help_link",
+									"value": "{{api_host_sign}}/help",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{signature_url}}/api/v1/brandings/",
+						"description": "jpg, jpeg, png, tiff, eps, ico, gif, bmp"
+					},
+					"response": []
+				},
+				{
+					"name": "Get a branding",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response details GetBrandDetails\", function () {\r",
+									"    if (pm.response.code === 200) {\r",
+									"        const responseData = pm.response.json();\r",
+									"\r",
+									"        pm.expect(responseData).to.be.an('object');\r",
+									"\t\t//pm.expect(responseData.brand_context).to.exist;\r",
+									"\t\t//pm.expect(responseData.from_email_address).to.exist;\r",
+									"\t\t//pm.expect(responseData.help_link).to.exist;\r",
+									"\t\t//pm.expect(responseData.logo).to.exist;\r",
+									"\t\t//pm.expect(responseData.product_name).to.exist;\r",
+									"\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/brandings/:brand_uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"brandings",
+								":brand_uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "brand_uuid",
+									"value": "{{brand_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PartialUpdateBrand",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response details PartialUpdateBrand\", function () {\r",
+									"    if (pm.response.code === 200) {\r",
+									"        const responseData = pm.response.json();\r",
+									"\r",
+									"        pm.expect(responseData).to.be.an('object');\r",
+									"\t\tpm.expect(responseData.brand_context).to.exist;\r",
+									"\t\tpm.expect(responseData.from_email_address).to.exist;\r",
+									"\t\tpm.expect(responseData.help_link).to.exist;\r",
+									"\t\tpm.expect(responseData.logo).to.exist;\r",
+									"\t\tpm.expect(responseData.product_name).to.exist;\r",
+									"\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "logo",
+									"type": "file",
+									"src": "/C:/Dev/postman/DevXGoldenCopy/sample-logo.jpg"
+								},
+								{
+									"key": "product_name",
+									"value": "{{product_name}}",
+									"type": "text"
+								},
+								{
+									"key": "help_link",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/brandings/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"brandings",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{brand_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBrand",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response details PartialUpdateBrand\", function () {\r",
+									"    if (pm.response.code === 200) {\r",
+									"        const responseData = pm.response.json();\r",
+									"\r",
+									"        pm.expect(responseData).to.be.an('object');\r",
+									"\t\tpm.expect(responseData.brand_context).to.exist;\r",
+									"\t\tpm.expect(responseData.from_email_address).to.exist;\r",
+									"\t\tpm.expect(responseData.help_link).to.exist;\r",
+									"\t\tpm.expect(responseData.logo).to.exist;\r",
+									"\t\tpm.expect(responseData.product_name).to.exist;\r",
+									"\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "logo",
+									"type": "file",
+									"src": "/C:/Dev/postman/DevXGoldenCopy/sample-logo.jpg"
+								},
+								{
+									"key": "product_name",
+									"value": "TEST",
+									"type": "text"
+								},
+								{
+									"key": "help_link",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": "{{signature_url}}/api/v1/brandings/{{brand_uuid}}/"
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteBrand",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.text();\r",
+									"\r",
+									"pm.test(\"Deletetion status\", function () {\r",
+									"\r",
+									"  if (pm.response.code === 204) {\r",
+									"    pm.expect(pm.response.code).to.equal(204);\r",
+									"  }\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/brandings/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"brandings",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Logo, help link and product name can br update for the organisation."
+		},
+		{
+			"name": "Customizations",
+			"item": [
+				{
+					"name": "Get All Customizations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields - count, next, previous, results\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('count');\r",
+									"    pm.expect(responseData.count >= 0)\r",
+									"    pm.expect(responseData).to.have.property('next');\r",
+									"    pm.expect(responseData).to.have.property('previous');\r",
+									"    pm.expect(responseData).to.have.property('results');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Results array is present and contains expected number of elements\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.results).to.exist;\r",
+									"    pm.expect(responseData.results).to.be.an('array');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Customization",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Customization flow\", function () {\r",
+									"        if (pm.response.code === 201) {\r",
+									"            pm.test(\"Response has the required fields - uuid, customization_context, login_modal, signature_completion_redirect_url\", function () {\r",
+									"            const responseData = pm.response.json();\r",
+									"\r",
+									"            pm.environment.set(\"custom_uuid\", responseData.uuid);\r",
+									"\r",
+									"            pm.expect(responseData).to.be.an('object');\r",
+									"            pm.expect(responseData.uuid).to.exist;\r",
+									"            pm.expect(responseData.customization_context).to.exist;\r",
+									"            pm.expect(responseData.login_modal).to.exist;\r",
+									"            pm.expect(responseData.signature_completion_redirect_url).to.exist;\r",
+									"\r",
+									"            pm.expect(responseData.login_modal).is.oneOf([\"required\", \"optional\", \"bypassed\"]);\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "login_modal",
+									"value": "optional",
+									"description": "optional | required | bypassed",
+									"type": "text"
+								},
+								{
+									"key": "signature_completion_redirect_url",
+									"value": "{{redirecturl}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Customization",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get Customization flow Details\", function () {\r",
+									"        if (pm.response.code === 200) {\r",
+									"            pm.test(\"Response has the required fields - uuid, customization_context, login_modal, signature_completion_redirect_url\",function() {\r",
+									"            const responseData = pm.response.json();\r",
+									"\r",
+									"            pm.expect(responseData).to.be.an('object');\r",
+									"            pm.expect(responseData.uuid).to.exist;\r",
+									"            pm.expect(responseData.customization_context).to.exist;\r",
+									"            pm.expect(responseData.login_modal).to.exist;\r",
+									"            pm.expect(responseData.signature_completion_redirect_url).to.exist;\r",
+									"\r",
+									"            pm.expect(responseData.login_modal).is.oneOf([\"required\", \"optional\", \"bypassed\"]);\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"defaults",
+								"signing-flow-customizations",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{custom_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Replace Cutomization",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"PUT Customization flow Details\", function () {\r",
+									"        if (pm.response.code === 200) {\r",
+									"            pm.test(\"Response has the required fields - uuid, customization_context, login_modal, signature_completion_redirect_url\",function() {\r",
+									"            const responseData = pm.response.json();\r",
+									"\r",
+									"            pm.expect(responseData).to.be.an('object');\r",
+									"            pm.expect(responseData.uuid).to.exist;\r",
+									"            pm.expect(responseData.customization_context).to.exist;\r",
+									"            pm.expect(responseData.login_modal).to.exist;\r",
+									"            pm.expect(responseData.signature_completion_redirect_url).to.exist;\r",
+									"\r",
+									"            pm.expect(responseData.login_modal).is.oneOf([\"required\", \"optional\", \"bypassed\"]);\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "login_modal",
+									"value": "optional",
+									"type": "text"
+								},
+								{
+									"key": "signature_completion_redirect_url",
+									"value": "{{redirecturl}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"defaults",
+								"signing-flow-customizations",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{custom_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customization",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"PATCH Customization flow Details\", function () {\r",
+									"        if (pm.response.code === 200) {\r",
+									"            pm.test(\"Response has the required fields - uuid, customization_context, login_modal, signature_completion_redirect_url\",function() {\r",
+									"            const responseData = pm.response.json();\r",
+									"\r",
+									"            pm.expect(responseData).to.be.an('object');\r",
+									"            pm.expect(responseData.uuid).to.exist;\r",
+									"            pm.expect(responseData.customization_context).to.exist;\r",
+									"            pm.expect(responseData.login_modal).to.exist;\r",
+									"            pm.expect(responseData.signature_completion_redirect_url).to.exist;\r",
+									"\r",
+									"            pm.expect(responseData.login_modal).is.oneOf([\"required\", \"optional\", \"bypassed\"]);\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "signature_completion_redirect_url",
+									"value": "{{redirecturl}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"defaults",
+								"signing-flow-customizations",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{custom_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customization",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.text();\r",
+									"\r",
+									"pm.test(\"Deletetion status\", function () {\r",
+									"\r",
+									"  if (pm.response.code === 204) {\r",
+									"    pm.expect(pm.response.code).to.equal(204);\r",
+									"  }\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{signature_url}}/api/v1/defaults/signing-flow-customizations/:uuid/",
+							"host": [
+								"{{signature_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"defaults",
+								"signing-flow-customizations",
+								":uuid",
+								""
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "{{custom_uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Login modal and redirect url customization."
+		},
+		{
+			"name": "Allowed File Types",
+			"item": [
+				{
+					"name": "allowed_file_types",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verity all the allowed file types\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"\tpm.expect(responseData.allowed_file_types).to.exist;\r",
+									"\r",
+									"    const allowedtypes = [\"bmp\",\"doc\",\"docx\",\"dot\",\"dotx\",\"gif\",\"htm\",\"html\",\"ico\",\"jpeg\",\"jpg\",\"md\",\"odg\",\"odi\",\"odp\",\"ods\",\"odt\",\"oth\",\"oxt\",\"pdf\",\"png\",\"pps\",\"ppsx\",\"ppt\",\"pptx\",\"rtf\",\"tiff\",\"txt\",\"xls\",\"xlsx\",\"xlt\",\"xltx\"];\r",
+									"\r",
+									"    pm.expect(compareTheArray(responseData.allowed_file_types,allowedtypes)).to.true;\r",
+									"    });\r",
+									"\r",
+									"function compareTheArray(arr1, arr2) {\r",
+									"  if (arr1.length !== arr2.length) {\r",
+									"    return false;\r",
+									"  }\r",
+									"\r",
+									"  for (let i = 0; i < arr1.length; i++) {\r",
+									"    if (arr1[i] !== arr2[i]) {\r",
+									"      return false;\r",
+									"    }\r",
+									"  }\r",
+									"\r",
+									"  return true;\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{tmp_org_access_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{signature_url}}/api/v1/allowed-file-types/"
+					},
+					"response": []
+				}
+			],
+			"description": "Allowed file types in core signature."
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": {
+			"grant_type": "password_credentials",
+			"clientSecret": "{{client_secret_site}}",
+			"clientId": "{{client_id_site}}",
+			"accessTokenUrl": "{{token_url_site}}",
+			"scope": "otds:roles",
+			"username": "{{email}}",
+			"password": "{{password}}",
+			"tokenName": "User",
+			"tokenType": "",
+			"accessToken": "",
+			"challengeAlgorithm": "S256",
+			"addTokenTo": "header",
+			"client_authentication": "body"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "create_date",
+			"value": "create_date"
+		},
+		{
+			"key": "page_num",
+			"value": "page_num"
+		}
+	]
+}
